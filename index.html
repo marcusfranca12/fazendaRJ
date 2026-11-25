@@ -513,11 +513,19 @@ function makeScrub(o){
   const pad = n => String(n).padStart(3, "0");
   function load(){
     if (imgs) return;
-    imgs = Array.from({length: o.n}, (_, i) => {
-      const im = new Image(); im.decoding = "async"; im.src = `${o.dir}/${pad(i + 1)}.webp`;
-      im.addEventListener("load", () => { if (i === 0 || i % 8 === 0) { cur = -1; update(); } });
-      return im;
-    });
+    imgs = Array.from({length: o.n}, () => new Image());
+    /* Carrega em camadas: primeiro quadros espaçados (a rolagem já funciona), depois os intermediários */
+    const order = [];
+    [8, 4, 2, 1].forEach(st => { for (let i = 0; i < o.n; i += st) if (!order.includes(i)) order.push(i); });
+    let pos = 0, active = 0;
+    (function next(){
+      while (active < 6 && pos < order.length) {
+        const i = order[pos++], im = imgs[i]; active++;
+        im.decoding = "async";
+        im.onload = im.onerror = () => { active--; if (i % 4 === 0) { cur = -1; update(); } next(); };
+        im.src = `${o.dir}/${pad(i + 1)}.webp`;
+      }
+    })();
   }
   function cover(c, ctx, im){
     const s = Math.max(c.width / im.naturalWidth, c.height / im.naturalHeight);
@@ -532,10 +540,13 @@ function makeScrub(o){
   }
   function draw(i){
     if (!imgs) return;
-    let k = i; while (k > 0 && !(imgs[k].complete && imgs[k].naturalWidth)) k--;
-    const im = imgs[k]; if (!(im.complete && im.naturalWidth) || k === cur) return;
-    cur = k; cover(cv, g, im);
-    if (amb && getComputedStyle(amb).display !== "none") cover(amb, ag, im);
+    let k = -1;
+    for (let d = 0; d < o.n && k < 0; d++) {
+      for (const j of [i - d, i + d]) { if (j >= 0 && j < o.n && imgs[j].complete && imgs[j].naturalWidth) { k = j; break; } }
+    }
+    if (k < 0 || k === cur) return;
+    cur = k; cover(cv, g, imgs[k]);
+    if (amb && getComputedStyle(amb).display !== "none") cover(amb, ag, imgs[k]);
   }
   function update(){
     const r = sec.getBoundingClientRect(), span = sec.offsetHeight - innerHeight;
@@ -551,8 +562,8 @@ function makeScrub(o){
   size(); update();
   return update;
 }
-const upHero = makeScrub({sec: f("hero"), cv: f("cv"), amb: f("amb"), dir: "frames", n: 121, fill: f("meterfill"), hint: f("hint")});
-const upPlantel = makeScrub({sec: f("plantel"), cv: f("cv2"), amb: f("amb2"), dir: "s", n: 120, fill: f("meterfill2"), lazy: true});
+const upHero = makeScrub({sec: f("hero"), cv: f("cv"), amb: f("amb"), dir: "frames", n: 61, fill: f("meterfill"), hint: f("hint")});
+const upPlantel = makeScrub({sec: f("plantel"), cv: f("cv2"), amb: f("amb2"), dir: "s", n: 60, fill: f("meterfill2"), lazy: true});
 
 /* Tanque que enche */
 const tank = f("tanque"), milk = f("milk"), lit = f("lit"), facts = [...document.querySelectorAll("#facts li")];
