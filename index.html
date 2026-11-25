@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fazenda RJ Vacas Leiteiras</title>
+<meta name="description" content="Vacas Girolanda 5/8 de alta lactação em Itabuna, Bahia. Veja o plantel, a ordenha e a ficha de cada vaca e combine a compra direto com a fazenda.">
+<meta name="author" content="Zora Media">
+<meta name="generator" content="Zora Media · ZM-SC-20261125-E622A5A4">
+<!-- Site por Zora Media. Código ZM-SC-20261125-E622A5A4. Copyright (c) Zora Media. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Direção: a vaca vem até você. A rolagem conduz a vaca, enche o tanque, passa o plantel e corre a galeria.
+   Tema único: azul-noite da logo, verde de pasto, branco de leite. Só imagens reais da fazenda. */
+:root{
+  --navy:#06153a; --navy2:#0d2c6e; --grass:#52b043; --grass-soft:#a6dd96;
+  --milk:#f4f7fd; --ink:#0b1735; --mute:#56648a; --line:#d9e2f5; --white:#ffffff;
+  --display:'Bricolage Grotesque',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --body:'Instrument Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --gutter:clamp(16px,4vw,56px);
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;background:var(--navy)}
+body{margin:0;background:var(--milk);color:var(--ink);font:400 1.0625rem/1.55 var(--body);overflow-x:clip;-webkit-font-smoothing:antialiased}
+img,video,canvas{max-width:100%;display:block}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--grass);outline-offset:3px;border-radius:6px}
+h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance}
+.wrap{max-width:1160px;margin:0 auto;padding:0 var(--gutter)}
+.eyebrow{font:600 .78rem/1 var(--body);letter-spacing:.16em;text-transform:uppercase;color:var(--grass)}
+.btn{display:inline-flex;align-items:center;gap:.6rem;background:var(--grass);color:#05210a;font:600 1rem/1 var(--body);padding:1rem 1.5rem;border-radius:999px;text-decoration:none;border:0;cursor:pointer;transition:transform .25s,background .2s,box-shadow .2s;box-shadow:0 10px 30px rgba(82,176,67,.35);will-change:transform}
+.btn:hover{background:#62c053}
+.btn[aria-disabled="true"]{opacity:.55;pointer-events:none}
+
+/* Barra de progresso */
+.bar{position:fixed;left:0;top:0;height:3px;width:100%;z-index:90;transform-origin:0 50%;transform:scaleX(0);background:linear-gradient(90deg,var(--grass),var(--grass-soft));pointer-events:none}
+
+/* Cabeçalho */
+.top{position:fixed;inset:0 0 auto 0;z-index:60;display:flex;justify-content:space-between;align-items:center;padding:14px var(--gutter);pointer-events:none}
+.top>*{pointer-events:auto}
+.top .logo{width:56px;height:56px;border-radius:50%;background:#fff;padding:3px;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+.top .btn{padding:.8rem 1.2rem;font-size:.95rem}
+
+/* Blocos com rolagem presa (abertura e plantel) */
+.pin{position:relative;height:var(--h,460vh);background:var(--navy)}
+.stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;display:grid;grid-template-columns:1.05fr .95fr;align-items:center;gap:2rem;padding:0 var(--gutter)}
+.amb{position:absolute;left:-10%;top:-10%;width:120%;height:120%;filter:blur(70px) saturate(1.35) brightness(.7);opacity:.6;z-index:0}
+.stage::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,rgba(6,21,58,.9) 0%,rgba(6,21,58,.55) 45%,rgba(6,21,58,.1) 100%)}
+.stage.rev{grid-template-columns:.95fr 1.05fr}
+.stage.rev::before{background:linear-gradient(270deg,rgba(6,21,58,.9) 0%,rgba(6,21,58,.55) 45%,rgba(6,21,58,.1) 100%)}
+.stage.rev .frame{order:1}
+.stage.rev .copy{order:2}
+.copy{position:relative;z-index:3;max-width:36rem}
+.beats{display:grid}
+.beat{grid-area:1/1;opacity:0;transform:translateY(26px);transition:opacity .6s ease,transform .6s ease;pointer-events:none}
+.beat.on{opacity:1;transform:none;pointer-events:auto}
+.beat .eyebrow{color:var(--grass-soft)}
+.beat h1,.beat h2{color:#fff;font-weight:800;font-size:clamp(2.5rem,5.6vw,5.4rem);line-height:.94;letter-spacing:-.035em;margin:1rem 0 1.2rem}
+.beat p{color:rgba(255,255,255,.84);font-size:clamp(1.05rem,1.4vw,1.25rem);max-width:27rem;margin:0 0 1.6rem}
+.frame{position:relative;z-index:2;justify-self:center;height:min(86vh,820px);height:min(86svh,820px);aspect-ratio:9/16;border-radius:30px;overflow:hidden;box-shadow:0 50px 120px rgba(0,0,0,.55);outline:1px solid rgba(255,255,255,.16);background:#0a1c44}
+.frame canvas{width:100%;height:100%}
+.hint{position:absolute;z-index:4;left:var(--gutter);bottom:28px;display:flex;align-items:center;gap:.8rem;color:rgba(255,255,255,.7);font:500 .85rem/1 var(--body);letter-spacing:.06em;transition:opacity .4s}
+.hint i{display:block;width:46px;height:1.5px;background:rgba(255,255,255,.5);position:relative;overflow:hidden}
+.hint i::after{content:"";position:absolute;inset:0;background:var(--grass-soft);transform:translateX(-100%);animation:run 1.8s ease-in-out infinite}
+@keyframes run{to{transform:translateX(100%)}}
+.meter{position:absolute;z-index:4;right:var(--gutter);top:50%;width:2px;height:min(40vh,320px);transform:translateY(-50%);background:rgba(255,255,255,.2);border-radius:2px}
+.stage.rev .meter{right:auto;left:var(--gutter)}
+.meter b{position:absolute;left:0;top:0;width:100%;height:0;background:var(--grass);border-radius:2px}
+.chap{position:absolute;z-index:4;left:50%;transform:translateX(-50%);top:34px;font:600 .78rem/1 var(--body);letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.55)}
+.dk{--mx:50%;--my:30%}
+.dk::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(520px circle at var(--mx) var(--my),rgba(166,221,150,.12),transparent 60%);z-index:1}
+
+@media (max-width:820px){
+  .pin{height:var(--hm,420vh)}
+  .stage,.stage.rev{display:block;padding:0}
+  .amb{display:none}
+  .frame{position:absolute;inset:0;height:auto;aspect-ratio:auto;border-radius:0;box-shadow:none;outline:0}
+  .stage::before,.stage.rev::before{background:linear-gradient(to top,rgba(6,21,58,.97) 0%,rgba(6,21,58,.9) 42%,rgba(6,21,58,.55) 62%,rgba(6,21,58,0) 86%)}
+  .beat h1,.beat h2,.beat p,.beat .eyebrow{text-shadow:0 2px 18px rgba(4,14,40,.85)}
+  .copy{position:absolute;left:var(--gutter);right:var(--gutter);bottom:calc(64px + env(safe-area-inset-bottom,0px))}
+  .beat h1,.beat h2{font-size:clamp(2.3rem,10.5vw,3.2rem)}
+  .hint,.stage.rev .chap{bottom:calc(22px + env(safe-area-inset-bottom,0px));left:var(--gutter)}
+  .meter,.chap{display:none}
+  .stage.rev .chap{display:block;left:var(--gutter);right:auto;top:auto;transform:none}
+  .dk::after{display:none}
+}
+
+/* Faixa em movimento */
+.mq{background:var(--grass);color:var(--navy);overflow:hidden;white-space:nowrap;padding:1.05rem 0;border-block:1px solid rgba(5,33,10,.25)}
+.mq-track{display:inline-flex;gap:0;animation:mq 38s linear infinite;will-change:transform}
+.mq span{font:800 clamp(1.4rem,3.2vw,2.4rem)/1 var(--display);letter-spacing:-.02em;padding:0 1.4rem;display:inline-flex;align-items:center;gap:2.8rem}
+.mq span::after{content:"";width:.7rem;height:.7rem;border-radius:50%;background:var(--navy)}
+@keyframes mq{to{transform:translateX(-50%)}}
+
+/* Seções comuns */
+section{position:relative}
+.pad{padding:clamp(72px,10vw,128px) 0}
+.sec-title{font-weight:800;font-size:clamp(2rem,4.6vw,3.6rem);line-height:1;letter-spacing:-.03em;margin:.9rem 0 1rem}
+.lead{color:var(--mute);max-width:40rem;font-size:1.12rem;margin:0}
+
+/* Tanque que enche */
+#tanque{height:300vh;background:var(--milk)}
+.tk{position:sticky;top:0;height:100vh;height:100svh;display:grid;grid-template-columns:.8fr 1.2fr;gap:clamp(20px,5vw,80px);align-items:center;max-width:1160px;margin:0 auto;padding:0 var(--gutter)}
+.tank{position:relative;justify-self:center;width:min(300px,34vw);aspect-ratio:200/360;filter:drop-shadow(0 40px 60px rgba(13,44,110,.25))}
+.tank svg{width:100%;height:100%;display:block;overflow:visible}
+.wave{animation:wv 3.2s linear infinite}
+@keyframes wv{to{transform:translateX(100px)}}
+.liters{display:flex;align-items:baseline;gap:.25em;font:800 clamp(5.5rem,13vw,12rem)/.8 var(--display);letter-spacing:-.06em;color:var(--navy2);font-variant-numeric:tabular-nums;margin:1.2rem 0 .8rem}
+.liters small{font:600 clamp(1.2rem,2vw,1.7rem)/1 var(--body);letter-spacing:0;color:var(--grass)}
+.facts{list-style:none;margin:1.4rem 0 0;padding:0;display:grid;gap:.9rem}
+.facts li{display:grid;grid-template-columns:auto 1fr;gap:1rem;align-items:baseline;padding-top:.9rem;border-top:2px solid var(--ink);opacity:.15;transform:translateY(14px);transition:opacity .6s,transform .6s}
+.facts li.on{opacity:1;transform:none}
+.facts b{font:800 clamp(1.5rem,2.6vw,2.2rem)/1 var(--display);letter-spacing:-.03em;color:var(--navy2);min-width:5.2rem}
+.facts span{color:var(--mute)}
+.tk .small{margin:1.4rem 0 0;padding:1rem 1.2rem;border-left:4px solid var(--grass);background:#fff;border-radius:0 14px 14px 0;color:var(--ink);font-size:.95rem;max-width:34rem}
+@media (max-width:820px){
+  #tanque{height:260vh}
+  .tk{grid-template-columns:1fr;grid-template-rows:auto 1fr;gap:0;padding-top:76px;align-content:center}
+  .tank{width:min(120px,28vw);position:absolute;right:var(--gutter);top:86px}
+  .tk .sec-title{font-size:clamp(1.5rem,6.6vw,2rem);margin-right:calc(min(120px,28vw) + 12px)}
+  .tk .lead{display:none}
+  .liters{font-size:clamp(4.6rem,22vw,6rem);margin:.8rem 0 .4rem}
+  .facts{gap:.55rem;margin-top:.8rem}
+  .facts li{padding-top:.55rem}
+  .facts b{font-size:1.25rem;min-width:4.2rem}
+  .facts span{font-size:.95rem;line-height:1.35}
+  .tk .small{font-size:.85rem;padding:.7rem .9rem;margin-top:.9rem}
+}
+
+/* Galeria lateral */
+.hg{background:var(--white)}
+.hg-stick{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;display:flex;flex-direction:column;justify-content:center;gap:clamp(16px,3vh,36px)}
+.hg-head{padding:0 var(--gutter);max-width:1160px;width:100%;margin:0 auto}
+.hg-head .sec-title{margin-bottom:.2rem}
+.hg-track{display:flex;gap:clamp(40px,7vw,120px);padding:0 var(--gutter);will-change:transform;width:max-content}
+.pn{flex:0 0 auto;display:flex;align-items:flex-end;gap:clamp(18px,2.4vw,34px);width:min(78vw,760px)}
+.pn .v{flex:0 0 auto;height:min(56vh,520px);aspect-ratio:9/16;border-radius:24px;overflow:hidden;background:#0a1c44;box-shadow:0 30px 70px rgba(13,44,110,.28)}
+.pn video{width:100%;height:100%;object-fit:cover}
+.pn .t{padding-bottom:.4rem}
+.pn .no{font:800 clamp(3.6rem,7vw,6.5rem)/.8 var(--display);letter-spacing:-.05em;color:transparent;-webkit-text-stroke:2px var(--navy2);margin-bottom:.8rem}
+.pn h3{font-weight:800;font-size:clamp(1.4rem,2.4vw,2rem);line-height:1.05;letter-spacing:-.025em;margin-bottom:.6rem}
+.pn p{margin:0;color:var(--mute);max-width:17rem}
+@media (max-width:820px){
+  .hg-stick{position:static;height:auto;overflow:visible;padding:clamp(64px,12vw,96px) 0}
+  .hg-track{width:auto;overflow-x:auto;scroll-snap-type:x mandatory;padding:1.6rem var(--gutter) 1rem;gap:16px;scrollbar-width:none}
+  .hg-track::-webkit-scrollbar{display:none}
+  .pn{flex:0 0 min(72vw,290px);flex-direction:column;align-items:stretch;width:auto;scroll-snap-align:start}
+  .pn .v{height:auto;width:100%}
+  .pn .no{font-size:3rem;margin-bottom:.4rem}
+}
+
+/* Região */
+.versus{display:grid;grid-template-columns:1fr 1fr;gap:clamp(14px,2vw,28px);margin-top:2.6rem}
+.col{border-radius:24px;padding:clamp(22px,3vw,40px)}
+.col h3{font-weight:800;font-size:1.5rem;letter-spacing:-.02em;margin-bottom:1.2rem}
+.col ul{list-style:none;margin:0;padding:0;display:grid;gap:1rem}
+.col li{display:grid;grid-template-columns:1.6rem 1fr;gap:.7rem;align-items:start}
+.col li span.m{font-weight:700}
+.reg{background:var(--navy);color:#fff;overflow:hidden}
+.reg .sec-title{color:#fff}
+.reg .lead{color:rgba(255,255,255,.75)}
+.reg .wrap{position:relative;z-index:2}
+.col.neg{background:rgba(255,255,255,.06);color:rgba(255,255,255,.62);border:1px solid rgba(255,255,255,.1)}
+.col.neg li span.m{color:rgba(255,255,255,.4)}
+.col.pos{background:linear-gradient(160deg,#1a5a2a,#2e8a3b 60%,#52b043);color:#fff;box-shadow:0 30px 80px rgba(82,176,67,.28)}
+.col.pos li span.m{color:#eaffe3}
+@media (max-width:820px){.versus{grid-template-columns:1fr}}
+
+/* Passos */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(16px,3vw,40px);margin-top:2.6rem}
+.step{border-top:2px solid var(--ink);padding-top:1.2rem}
+.step .no{font:800 clamp(3.4rem,6vw,5rem)/.85 var(--display);letter-spacing:-.05em;color:transparent;-webkit-text-stroke:2px var(--navy2)}
+.step h3{font-weight:800;font-size:1.4rem;letter-spacing:-.02em;margin:.9rem 0 .4rem}
+.step p{margin:0;color:var(--mute)}
+@media (max-width:820px){.steps{grid-template-columns:1fr}.step{display:grid;grid-template-columns:auto 1fr;gap:0 1.2rem}.step .no{grid-row:span 2}.step h3{margin-top:0}}
+
+/* Perguntas */
+.faq{max-width:50rem;margin-top:2.4rem;display:grid;gap:.8rem}
+.faq details{background:#fff;border:1px solid var(--line);border-radius:16px;padding:0 1.3rem}
+.faq summary{cursor:pointer;list-style:none;font:600 1.08rem/1.35 var(--body);padding:1.15rem 0;display:flex;justify-content:space-between;gap:1rem;align-items:center}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";font-size:1.5rem;color:var(--grass);transition:transform .2s}
+.faq details[open] summary::after{transform:rotate(45deg)}
+.faq details p{margin:0 0 1.2rem;color:var(--mute)}
+
+/* Pedido */
+.order{background:var(--navy);color:#fff;overflow:hidden}
+.bgv{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.28;z-index:0;filter:saturate(1.1)}
+.order::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,var(--navy) 0%,rgba(6,21,58,.7) 40%,rgba(6,21,58,.9) 100%)}
+.order .wrap{position:relative;z-index:2}
+.order-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(24px,5vw,72px);align-items:center}
+.order .sec-title{color:#fff}
+.order .lead{color:rgba(255,255,255,.78)}
+.card{background:var(--milk);color:var(--ink);border-radius:26px;padding:clamp(22px,3vw,38px);box-shadow:0 40px 90px rgba(0,0,0,.35)}
+.card label{display:block;font:600 .9rem/1 var(--body);margin:0 0 .5rem}
+.card .row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.card .fld{margin-bottom:16px}
+.card input,.card select{width:100%;font:500 1rem/1.2 var(--body);padding:.95rem 1rem;border-radius:12px;border:1.5px solid var(--line);background:#fff;color:var(--ink)}
+.card input:focus,.card select:focus{outline:3px solid rgba(82,176,67,.4);border-color:var(--grass)}
+.card .btn{width:100%;justify-content:center;margin-top:.4rem}
+.card small{display:block;color:var(--mute);margin-top:.9rem;text-align:center}
+@media (max-width:820px){.order-grid{grid-template-columns:1fr}.card .row{grid-template-columns:1fr}}
+
+footer{background:#041030;color:rgba(255,255,255,.7);padding:48px 0 110px}
+footer .wrap{display:flex;gap:1.5rem;align-items:center;justify-content:space-between;flex-wrap:wrap}
+footer img{width:84px;height:84px;border-radius:50%;background:#fff;padding:4px}
+footer p{margin:0;font-size:.95rem}
+footer a{color:#fff}
+
+/* WhatsApp flutuante */
+.fab{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:max(16px,env(safe-area-inset-bottom,0px));z-index:70;display:inline-flex;align-items:center;gap:.6rem;background:#25d366;color:#04210f;font:700 1rem/1 var(--body);padding:.95rem 1.2rem;border-radius:999px;text-decoration:none;box-shadow:0 14px 34px rgba(0,0,0,.35);transition:transform .3s,opacity .3s}
+.fab.hide{transform:translateY(120%);opacity:0;pointer-events:none}
+.fab svg{width:22px;height:22px}
+.grain{position:fixed;inset:0;z-index:80;pointer-events:none;opacity:.06;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+
+/* Revelar ao rolar (só quando o JS está ativo) */
+.js .rv{opacity:0;transform:translateY(26px);transition:opacity .8s ease,transform .8s cubic-bezier(.2,.7,.2,1)}
+.js .rv.in{opacity:1;transform:none}
+.js .split .w{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.14em;margin-bottom:-.14em}
+.js .split .w>span{display:inline-block;transform:translateY(108%);transition:transform .9s cubic-bezier(.2,.7,.2,1)}
+.js .split.in .w>span{transform:none}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .pin{height:auto}
+  .beat{transition:none}
+  .hint,.meter,.chap{display:none}
+  .mq-track,.wave{animation:none}
+  .js .rv,.js .split .w>span{opacity:1;transform:none;transition:none}
+  #tanque{height:auto}
+  .tk{position:static;height:auto;padding-block:80px}
+  .facts li{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+<div class="bar" id="bar" aria-hidden="true"></div>
+
+<header class="top">
+  <img class="logo" src="img/logo.webp" alt="Leite RJ" width="56" height="56">
+  <a class="btn" data-wa data-msg="Olá! Vim pelo site da Fazenda RJ e quero saber das vacas disponíveis." data-ev="cta_header" href="#pedido">Falar no WhatsApp</a>
+</header>
+
+<!-- 1. Abertura: a vaca vem até você -->
+<section id="hero" class="pin" style="--h:460vh;--hm:420vh" aria-label="Abertura">
+  <div class="stage">
+    <canvas class="amb" id="amb" aria-hidden="true"></canvas>
+    <div class="copy">
+      <div class="beats">
+        <div class="beat on" data-beat="0-0.33">
+          <span class="eyebrow">Fazenda RJ · Itabuna, Bahia</span>
+          <h1>Girolanda 5/8 criada aqui.</h1>
+          <p>Vacas leiteiras de alta lactação, no sul da Bahia.</p>
+        </div>
+        <div class="beat" data-beat="0.33-0.66">
+          <span class="eyebrow">Produção</span>
+          <h2>30 litros por dia, em duas ordenhas.</h2>
+          <p>É a média das vacas do plantel. Pergunte pela pesagem da vaca que te interessa.</p>
+        </div>
+        <div class="beat" data-beat="0.66-1">
+          <span class="eyebrow">Sem viagem longa</span>
+          <h2>Não precisa buscar em outro estado.</h2>
+          <p>Escolha a vaca, veja a ordenha e combine a compra direto com a fazenda.</p>
+          <a class="btn" data-wa data-msg="Olá! Vim pelo site da Fazenda RJ e quero ver as vacas disponíveis." data-ev="cta_hero" href="#pedido">Quero ver as vacas disponíveis</a>
+        </div>
+      </div>
+    </div>
+    <div class="frame"><canvas id="cv" aria-label="Vaca Girolanda caminhando no pasto em direção à câmera" role="img"></canvas></div>
+    <div class="chap" aria-hidden="true">01 · A vaca</div>
+    <div class="hint" id="hint"><i></i>Role para a vaca chegar</div>
+    <div class="meter" aria-hidden="true"><b id="meterfill"></b></div>
+  </div>
+</section>
+
+<div class="mq" aria-hidden="true">
+  <div class="mq-track">
+    <span>Girolanda 5/8</span><span>Itabuna, Bahia</span><span>30 litros por dia</span><span>Duas ordenhas</span><span>Criada no clima daqui</span>
+    <span>Girolanda 5/8</span><span>Itabuna, Bahia</span><span>30 litros por dia</span><span>Duas ordenhas</span><span>Criada no clima daqui</span>
+  </div>
+</div>
+
+<!-- 2. Tanque que enche com a rolagem -->
+<section id="tanque" aria-label="Produção por vaca">
+  <div class="tk">
+    <div class="tank" aria-hidden="true">
+      <svg viewBox="0 0 200 360">
+        <defs>
+          <clipPath id="tkc"><rect x="20" y="20" width="160" height="320" rx="30"/></clipPath>
+          <linearGradient id="mk" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#cfe0ff"/></linearGradient>
+        </defs>
+        <rect x="20" y="20" width="160" height="320" rx="30" fill="rgba(13,44,110,.09)"/>
+        <g clip-path="url(#tkc)">
+          <g id="milk" transform="translate(0,340)">
+            <path class="wave" d="M-200 0 q25 -14 50 0 t50 0 t50 0 t50 0 t50 0 t50 0 t50 0 t50 0 V400 H-200 Z" fill="url(#mk)"/>
+          </g>
+        </g>
+        <rect x="20" y="20" width="160" height="320" rx="30" fill="none" stroke="#0d2c6e" stroke-width="4"/>
+        <g stroke="#0d2c6e" stroke-width="3" stroke-linecap="round" opacity=".55">
+          <path d="M146 238h28"/><path d="M146 136h28"/><path d="M146 40h28"/>
+        </g>
+        <g font-family="Instrument Sans,sans-serif" font-size="13" font-weight="600" fill="#0d2c6e" opacity=".7" text-anchor="end">
+          <text x="138" y="243">10 L</text><text x="138" y="141">20 L</text><text x="138" y="45">30 L</text>
+        </g>
+      </svg>
+    </div>
+    <div>
+      <span class="eyebrow">A ficha da vaca</span>
+      <h2 class="sec-title">A conversa começa pelo tanque, não pela promessa.</h2>
+      <p class="lead">Cada vaca tem produção própria. Por isso o atendimento parte da ficha dela.</p>
+      <div class="liters"><span id="lit">0</span><small>litros por vaca, por dia</small></div>
+      <ul class="facts" id="facts">
+        <li><b>2</b><span>ordenhas por dia, com limpeza do teto antes de cada uma.</span></li>
+        <li><b>5/8</b><span>Girolando: cinco partes Holandês e três Gir, o padrão da raça.</span></li>
+        <li><b>1 ficha</b><span>por vaca, com litros, número de cria e situação do bezerro.</span></li>
+      </ul>
+      <p class="small">A média de 30 litros é o número informado pela fazenda para o plantel. Peça a pesagem da vaca específica antes de fechar negócio.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 3. Plantel: capítulo de rolagem -->
+<section id="plantel" class="pin" style="--h:340vh;--hm:320vh" aria-label="O plantel">
+  <div class="stage rev">
+    <canvas class="amb" id="amb2" aria-hidden="true"></canvas>
+    <div class="frame"><canvas id="cv2" aria-label="Vacas leiteiras caminhando soltas no pasto" role="img"></canvas></div>
+    <div class="copy">
+      <div class="beats">
+        <div class="beat on" data-beat="0-0.33">
+          <span class="eyebrow">O plantel</span>
+          <h2>Vacas soltas no pasto de Itabuna.</h2>
+          <p>Gado leiteiro criado no clima onde vai produzir, sem adaptação de outro estado.</p>
+        </div>
+        <div class="beat" data-beat="0.33-0.66">
+          <span class="eyebrow">Vaca por vaca</span>
+          <h2>Cada uma com a sua ficha.</h2>
+          <p>Litros, número de cria e situação do bezerro. Você escolhe com número na mão.</p>
+        </div>
+        <div class="beat" data-beat="0.66-1">
+          <span class="eyebrow">Pessoalmente</span>
+          <h2>Escolha olhando de perto.</h2>
+          <p>Combine a visita e veja o plantel e a ordenha na fazenda.</p>
+          <a class="btn" data-wa data-msg="Olá! Vim pelo site da Fazenda RJ e quero combinar uma visita para ver as vacas." data-ev="cta_plantel" href="#pedido">Combinar uma visita</a>
+        </div>
+      </div>
+    </div>
+    <div class="chap" aria-hidden="true">02 · O plantel</div>
+    <div class="meter" aria-hidden="true"><b id="meterfill2"></b></div>
+  </div>
+</section>
+
+<!-- 4. Galeria lateral -->
+<section id="prova" class="hg" aria-label="Rotina da fazenda">
+  <div class="hg-stick">
+    <div class="hg-head">
+      <span class="eyebrow">Veja antes de comprar</span>
+      <h2 class="sec-title split">É assim que a vaca é tratada na fazenda.</h2>
+    </div>
+    <div class="hg-track" id="track" tabindex="0" aria-label="Vídeos da fazenda">
+      <article class="pn"><div class="v"><video muted loop playsinline preload="metadata" poster="img/higiene.webp"><source src="clips/higiene.mp4" type="video/mp4"></video></div><div class="t"><div class="no" aria-hidden="true">01</div><h3>Limpeza antes da ordenha</h3><p>Água e papel em cada teto, antes de ligar a ordenha.</p></div></article>
+      <article class="pn"><div class="v"><video muted loop playsinline preload="metadata" poster="img/ordenha.webp"><source src="clips/ordenha.mp4" type="video/mp4"></video></div><div class="t"><div class="no" aria-hidden="true">02</div><h3>Ordenha mecânica</h3><p>Galpão coberto, com a vaca contida e tranquila.</p></div></article>
+      <article class="pn"><div class="v"><video muted loop playsinline preload="metadata" poster="img/cocho.webp"><source src="clips/cocho.mp4" type="video/mp4"></video></div><div class="t"><div class="no" aria-hidden="true">03</div><h3>Cocho coberto e pasto verde</h3><p>O rebanho se alimentando em grupo, em ambiente organizado.</p></div></article>
+    </div>
+  </div>
+</section>
+
+<!-- 5. Região -->
+<section class="pad reg dk" id="regiao">
+  <div class="wrap">
+    <span class="eyebrow">Perto de você</span>
+    <h2 class="sec-title split">Itabuna ou outro estado?</h2>
+    <p class="lead rv">Comprar vaca de longe costuma significar frete longo e animal que ainda precisa se acostumar com o calor daqui.</p>
+    <div class="versus">
+      <div class="col neg rv">
+        <h3>Vaca de outro estado</h3>
+        <ul>
+          <li><span class="m">×</span><span>Frete interestadual e dias de estrada.</span></li>
+          <li><span class="m">×</span><span>Adaptação ao clima e ao pasto da Bahia.</span></li>
+          <li><span class="m">×</span><span>Conferência só por foto e vídeo.</span></li>
+          <li><span class="m">×</span><span>Negociação com intermediário.</span></li>
+        </ul>
+      </div>
+      <div class="col pos rv">
+        <h3>Vaca da Fazenda RJ</h3>
+        <ul>
+          <li><span class="m">✓</span><span>Sem frete interestadual. Retirada na região.</span></li>
+          <li><span class="m">✓</span><span>Criada no sul da Bahia, no clima onde vai produzir.</span></li>
+          <li><span class="m">✓</span><span>Você pode ver a ordenha na fazenda.</span></li>
+          <li><span class="m">✓</span><span>Conversa direta com quem criou a vaca.</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 6. Como comprar e perguntas -->
+<section class="pad" id="duvidas">
+  <div class="wrap">
+    <span class="eyebrow">Como comprar</span>
+    <h2 class="sec-title split">Três passos, direto com a fazenda.</h2>
+    <div class="steps">
+      <div class="step rv"><div class="no" aria-hidden="true">01</div><h3>Peça a lista</h3><p>Diga o que procura e receba as vacas disponíveis, com litros, número de cria e preço.</p></div>
+      <div class="step rv"><div class="no" aria-hidden="true">02</div><h3>Veja a vaca e a ordenha</h3><p>Combine a visita e confira a vaca de perto antes de decidir.</p></div>
+      <div class="step rv"><div class="no" aria-hidden="true">03</div><h3>Combine a retirada</h3><p>Retire na fazenda ou combine o transporte até a sua propriedade.</p></div>
+    </div>
+    <h2 class="sec-title split" style="margin-top:clamp(56px,8vw,96px)">As perguntas de quem compra vaca.</h2>
+    <div class="faq">
+      <details><summary>Quantos litros ela dá de verdade?</summary><p>A média do plantel é de 30 litros por vaca, por dia, em duas ordenhas. Cada vaca tem produção própria, então peça a ficha e a pesagem da vaca que você quer.</p></details>
+      <details><summary>Quantas crias ela já teve? Tem bezerro?</summary><p>Informamos vaca por vaca no WhatsApp, junto com a situação do bezerro.</p></details>
+      <details><summary>Qual o preço?</summary><p>O preço depende da vaca e da quantidade. Mande sua mensagem e receba a lista com valores.</p></details>
+      <details><summary>Posso ver a vaca sendo ordenhada?</summary><p>Sim. Combine a visita pelo WhatsApp e veja a ordenha na fazenda antes de decidir.</p></details>
+      <details><summary>Como funciona a retirada e o transporte?</summary><p>Fale com a gente para combinar retirada na fazenda ou transporte até a sua propriedade.</p></details>
+      <details><summary>E a situação sanitária dos animais?</summary><p>Informamos a situação sanitária de cada animal no atendimento, antes de fechar a compra.</p></details>
+    </div>
+  </div>
+</section>
+
+<!-- 7. Pedido -->
+<section class="pad order dk" id="pedido">
+  <video class="bgv" id="bgv" muted loop playsinline preload="none" poster="img/cocho.webp" aria-hidden="true"><source src="clips/cocho.mp4" type="video/mp4"></video>
+  <div class="wrap order-grid">
+    <div>
+      <span class="eyebrow">Peça a lista</span>
+      <h2 class="sec-title split">Diga o que você procura e a fazenda responde no WhatsApp.</h2>
+      <p class="lead">Você recebe a lista das vacas disponíveis, com litros, número de cria e preço.</p>
+    </div>
+    <form class="card" id="form" autocomplete="on" novalidate>
+      <div class="fld"><label for="f-nome">Seu nome</label><input id="f-nome" name="nome" type="text" placeholder="Como podemos te chamar"></div>
+      <div class="row">
+        <div class="fld"><label for="f-tipo">O que você procura</label>
+          <select id="f-tipo" name="tipo">
+            <option value="vacas em lactação">Vaca em lactação</option>
+            <option value="novilhas">Novilhas</option>
+            <option value="um lote de vacas">Lote de vacas</option>
+          </select></div>
+        <div class="fld"><label for="f-qtd">Quantidade</label>
+          <select id="f-qtd" name="qtd">
+            <option value="1 animal">1 animal</option>
+            <option value="2 a 5 animais">2 a 5 animais</option>
+            <option value="6 a 10 animais">6 a 10 animais</option>
+            <option value="mais de 10 animais">Mais de 10</option>
+          </select></div>
+      </div>
+      <div class="fld"><label for="f-cidade">Sua cidade</label><input id="f-cidade" name="cidade" type="text" placeholder="Cidade e estado"></div>
+      <a class="btn" id="send" data-ev="cta_form" href="#pedido" aria-disabled="false">Pedir a lista no WhatsApp</a>
+      <small>Ao clicar, o WhatsApp abre com a mensagem pronta.</small>
+    </form>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div style="display:flex;gap:1rem;align-items:center">
+      <img src="img/logo.webp" alt="Leite RJ" width="84" height="84">
+      <p><strong style="color:#fff">Fazenda RJ · Leite RJ</strong><br>Itabuna, Bahia<br>Vacas leiteiras Girolanda e leite de qualidade.</p>
+    </div>
+    <p>Site por <a href="https://www.instagram.com/zoramedia" rel="noopener">Zora Media</a></p>
+  </div>
+</footer>
+
+<a class="fab" id="fab" data-wa data-msg="Olá! Vim pelo site da Fazenda RJ e quero saber das vacas disponíveis." data-ev="cta_fab" href="#pedido" aria-label="Falar no WhatsApp">
+  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.890-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+  WhatsApp
+</a>
+<div class="grain" aria-hidden="true"></div>
+
+<script>
+document.documentElement.classList.add("js");
+/* Configuração: número do WhatsApp com 55 + DDD + número, só dígitos. Exemplo de formato: 5573900000000 */
+const WHATSAPP = "";
+window.dataLayer = window.dataLayer || [];
+const track = (e) => window.dataLayer.push({event: e});
+const waLink = (msg) => WHATSAPP ? `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}` : "#pedido";
+const f = id => document.getElementById(id);
+const clamp = (v) => Math.min(1, Math.max(0, v));
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const hasIO = "IntersectionObserver" in window;
+
+/* Links de WhatsApp */
+document.querySelectorAll("[data-wa]").forEach(a => {
+  a.href = waLink(a.dataset.msg || "");
+  if (WHATSAPP) { a.target = "_blank"; a.rel = "noopener"; }
+  a.addEventListener("click", () => track(a.dataset.ev || "cta"));
+});
+
+/* Formulário monta a mensagem */
+const send = f("send");
+function buildMsg(){
+  const nome = f("f-nome").value.trim(), cid = f("f-cidade").value.trim();
+  let m = "Olá! Vim pelo site da Fazenda RJ.";
+  if (nome) m += ` Meu nome é ${nome}.`;
+  m += ` Procuro ${f("f-tipo").value}, quantidade: ${f("f-qtd").value}.`;
+  if (cid) m += ` Cidade: ${cid}.`;
+  m += " Pode me enviar a lista com litros, número de cria e preço?";
+  return m;
+}
+function syncSend(){
+  send.href = waLink(buildMsg());
+  if (WHATSAPP) { send.target = "_blank"; send.rel = "noopener"; send.setAttribute("aria-disabled","false"); }
+  else { send.setAttribute("aria-disabled","true"); send.textContent = "WhatsApp em configuração"; }
+}
+["f-nome","f-tipo","f-qtd","f-cidade"].forEach(id => f(id).addEventListener("input", syncSend));
+send.addEventListener("click", () => track("cta_form"));
+syncSend();
+
+/* Seção presa com quadros que a rolagem conduz (abertura e plantel) */
+function makeScrub(o){
+  const sec = o.sec, cv = o.cv, g = cv.getContext("2d"), amb = o.amb, ag = amb && amb.getContext("2d");
+  const beats = [...sec.querySelectorAll(".beat")], fill = o.fill, hint = o.hint;
+  let imgs = null, cur = -1;
+  const pad = n => String(n).padStart(3, "0");
+  function load(){
+    if (imgs) return;
+    imgs = Array.from({length: o.n}, (_, i) => {
+      const im = new Image(); im.decoding = "async"; im.src = `${o.dir}/${pad(i + 1)}.webp`;
+      im.addEventListener("load", () => { if (i === 0 || i % 8 === 0) { cur = -1; update(); } });
+      return im;
+    });
+  }
+  function cover(c, ctx, im){
+    const s = Math.max(c.width / im.naturalWidth, c.height / im.naturalHeight);
+    const w = im.naturalWidth * s, h = im.naturalHeight * s;
+    ctx.drawImage(im, (c.width - w) / 2, (c.height - h) / 2, w, h);
+  }
+  function size(){
+    const r = Math.min(devicePixelRatio || 1, 2), b = cv.getBoundingClientRect();
+    cv.width = Math.max(2, Math.round(b.width * r)); cv.height = Math.max(2, Math.round(b.height * r));
+    if (amb) { amb.width = 200; amb.height = Math.max(2, Math.round(200 * innerHeight / innerWidth)); }
+    cur = -1;
+  }
+  function draw(i){
+    if (!imgs) return;
+    let k = i; while (k > 0 && !(imgs[k].complete && imgs[k].naturalWidth)) k--;
+    const im = imgs[k]; if (!(im.complete && im.naturalWidth) || k === cur) return;
+    cur = k; cover(cv, g, im);
+    if (amb && getComputedStyle(amb).display !== "none") cover(amb, ag, im);
+  }
+  function update(){
+    const r = sec.getBoundingClientRect(), span = sec.offsetHeight - innerHeight;
+    const p = reduce ? 1 : clamp(-r.top / Math.max(1, span));
+    draw(Math.min(o.n - 1, Math.floor(p * o.n)));
+    beats.forEach(el => { const [a, b] = el.dataset.beat.split("-").map(Number); el.classList.toggle("on", p >= a && (p < b || b === 1 && p <= 1)); });
+    if (fill) fill.style.height = (p * 100) + "%";
+    if (hint) hint.style.opacity = p > 0.04 ? 0 : 1;
+  }
+  if (o.lazy && hasIO) new IntersectionObserver((es, io) => { if (es.some(e => e.isIntersecting)) { load(); size(); update(); io.disconnect(); } }, {rootMargin: "1800px 0px"}).observe(sec);
+  else load();
+  addEventListener("resize", () => { size(); update(); });
+  size(); update();
+  return update;
+}
+const upHero = makeScrub({sec: f("hero"), cv: f("cv"), amb: f("amb"), dir: "frames", n: 121, fill: f("meterfill"), hint: f("hint")});
+const upPlantel = makeScrub({sec: f("plantel"), cv: f("cv2"), amb: f("amb2"), dir: "s", n: 120, fill: f("meterfill2"), lazy: true});
+
+/* Tanque que enche */
+const tank = f("tanque"), milk = f("milk"), lit = f("lit"), facts = [...document.querySelectorAll("#facts li")];
+function upTank(){
+  const r = tank.getBoundingClientRect(), span = tank.offsetHeight - innerHeight;
+  const p = reduce ? 1 : clamp(-r.top / Math.max(1, span) / 0.78);
+  milk.setAttribute("transform", `translate(0,${340 - p * 306})`);
+  lit.textContent = Math.round(p * 30);
+  facts.forEach((li, i) => li.classList.toggle("on", reduce || p >= [0.34, 0.62, 0.9][i]));
+}
+
+/* Galeria lateral */
+const hg = f("prova"), trk = f("track");
+const deskG = () => matchMedia("(min-width:821px)").matches && !reduce;
+function layoutG(){
+  if (!deskG()) { hg.style.height = ""; trk.style.transform = ""; return; }
+  hg.style.height = (innerHeight + Math.max(0, trk.scrollWidth - innerWidth)) + "px";
+}
+function upG(){
+  if (!deskG()) return;
+  const dist = Math.max(0, trk.scrollWidth - innerWidth), r = hg.getBoundingClientRect();
+  const p = clamp(-r.top / Math.max(1, hg.offsetHeight - innerHeight));
+  trk.style.transform = `translate3d(${-p * dist}px,0,0)`;
+}
+addEventListener("resize", () => { layoutG(); upG(); });
+trk.querySelectorAll("video").forEach(v => v.addEventListener("loadedmetadata", () => { layoutG(); upG(); }));
+
+/* Rolagem: progresso, blocos presos e galeria */
+const bar = f("bar");
+let tick = false;
+function onScroll(){
+  upHero(); upPlantel(); upTank(); upG();
+  const h = document.documentElement.scrollHeight - innerHeight;
+  bar.style.transform = `scaleX(${h > 0 ? clamp(scrollY / h) : 0})`;
+}
+addEventListener("scroll", () => { if (!tick) { tick = true; requestAnimationFrame(() => { tick = false; onScroll(); }); } }, {passive:true});
+layoutG(); onScroll();
+addEventListener("load", () => { layoutG(); onScroll(); });
+
+/* Títulos palavra por palavra e revelação ao rolar */
+document.querySelectorAll(".split").forEach(el => {
+  const words = el.textContent.trim().split(/\s+/);
+  el.setAttribute("aria-label", el.textContent.trim());
+  el.innerHTML = words.map((w, i) => `<span class="w" aria-hidden="true"><span style="transition-delay:${i * 60}ms">${w}</span></span>`).join(" ");
+});
+if (hasIO && !reduce) {
+  const ro = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add("in"); ro.unobserve(e.target); } }), {threshold: .25, rootMargin: "0px 0px -6% 0px"});
+  document.querySelectorAll(".rv,.split").forEach(el => ro.observe(el));
+} else {
+  document.querySelectorAll(".rv,.split").forEach(el => el.classList.add("in"));
+}
+
+/* Vídeos tocam só quando visíveis */
+const vids = [...document.querySelectorAll(".pn video, #bgv")];
+if (hasIO) {
+  const vo = new IntersectionObserver(es => es.forEach(e => { const v = e.target; if (e.isIntersecting && !reduce) v.play().catch(()=>{}); else v.pause(); }), {threshold:.35});
+  vids.forEach(v => vo.observe(v));
+}
+
+/* Luz que segue o ponteiro nas seções escuras e botões com ímã (só com mouse) */
+if (matchMedia("(hover:hover) and (pointer:fine)").matches && !reduce) {
+  document.querySelectorAll(".dk").forEach(s => s.addEventListener("pointermove", e => {
+    const b = s.getBoundingClientRect(); s.style.setProperty("--mx", (e.clientX - b.left) + "px"); s.style.setProperty("--my", (e.clientY - b.top) + "px");
+  }, {passive:true}));
+  document.querySelectorAll(".btn").forEach(b => {
+    b.addEventListener("pointermove", e => { const r = b.getBoundingClientRect(); b.style.transform = `translate(${(e.clientX - r.left - r.width / 2) * .16}px,${(e.clientY - r.top - r.height / 2) * .28 - 2}px)`; });
+    b.addEventListener("pointerleave", () => { b.style.transform = ""; });
+  });
+}
+
+/* Botão flutuante recolhe junto do pedido */
+const fab = f("fab");
+if (hasIO) new IntersectionObserver(es => es.forEach(e => fab.classList.toggle("hide", e.isIntersecting)), {threshold:.25}).observe(f("pedido"));
+</script>
+</body>
+</html>
